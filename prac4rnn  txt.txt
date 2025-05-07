@@ -1,0 +1,177 @@
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import SimpleRNN, Dense
+import numpy as np
+import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import train_test_split
+import kagglehub
+
+# Download dataset using kagglehub
+path = kagglehub.dataset_download("akram24/google-stock-price-test")
+dataset_path = f"{path}/Google_Stock_Price_Test.csv"
+
+# Load dataset
+data = pd.read_csv(dataset_path, usecols=[1]).dropna().values.astype(float)
+
+# Normalize data
+scaler = MinMaxScaler()
+data = scaler.fit_transform(data)
+
+ def create_dataset(dataset, time_step=10):
+    X, y = [], []
+    for i in range(len(dataset) - time_step):
+        X.append(dataset[i:i + time_step])
+        y.append(dataset[i + time_step])
+    return np.array(X), np.array(y)
+
+
+# Ensure dataset has enough samples
+time_step = min(10, len(data) - 1)
+if len(data) > time_step:
+  if len(data) > time_step:
+    X, y = create_dataset(data, time_step)
+X = X.reshape(X.shape[0], X.shape[1], 1)
+
+
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Define RNN model
+model = Sequential([
+SimpleRNN(50, activation='relu', return_sequences=True, input_shape=(time_step, 1)),
+SimpleRNN(50, activation='relu'),
+Dense(1)
+])
+
+# Compile and train model
+model.compile(optimizer='adam', loss='mse')
+model.fit(X_train, y_train, epochs=20, batch_size=32, validation_data=(X_test, y_test))
+
+# Evaluate model
+if len(X) > 0:
+    print(f"Test Loss: {model.evaluate(X_test, y_test)}")
+else:
+    print("Error: Not enough data points to create sequences. Consider using a smaller time step.")
+
+
+--------------------------------
+Here’s a detailed **point-wise breakdown** of your RNN-based stock price prediction code using TensorFlow and a Kaggle dataset, including **what you've done**, **libraries used**, **concepts applied**, and **fixes**:
+
+---
+
+### ✅ **What You’ve Done (Step-by-Step)**
+
+1. **Imported necessary libraries** for deep learning (`TensorFlow`), data handling (`NumPy`, `Pandas`), preprocessing (`MinMaxScaler`), and dataset splitting.
+2. **Downloaded the stock price dataset** from Kaggle using `kagglehub`.
+3. **Loaded the dataset** using `pandas` and selected only the "Open" column (stock prices).
+4. **Normalized the data** using `MinMaxScaler` (scales values between 0 and 1 for better neural network performance).
+5. **Created time-series sequences** using a sliding window approach (`create_dataset()` function).
+6. **Reshaped input** to 3D as required by RNNs: `(samples, timesteps, features)`.
+7. **Split data into training and testing sets** using `train_test_split`.
+8. **Built a Recurrent Neural Network (RNN)** model using:
+
+   * Two `SimpleRNN` layers (first one returns sequences)
+   * One output `Dense` layer for predicting the next stock price
+9. **Compiled the model** using the Adam optimizer and Mean Squared Error (MSE) as the loss function.
+10. **Trained the model** for 20 epochs with batch size 32.
+11. **Evaluated the model’s performance** on the test data.
+
+---
+
+### 📚 **Libraries Used and Their Purpose**
+
+| Library                                             | Purpose                                      |
+| --------------------------------------------------- | -------------------------------------------- |
+| `tensorflow`                                        | Framework for deep learning and building RNN |
+| `SimpleRNN`                                         | Basic recurrent layer for sequential data    |
+| `Dense`                                             | Fully connected layer for final output       |
+| `numpy`                                             | Array operations and reshaping               |
+| `pandas`                                            | Reading and handling tabular data            |
+| `MinMaxScaler` (from `sklearn.preprocessing`)       | Scales data to a 0-1 range                   |
+| `train_test_split` (from `sklearn.model_selection`) | Splits data into training and test sets      |
+| `kagglehub`                                         | Downloads Kaggle datasets programmatically   |
+
+---
+
+### 💡 **Concepts/Technologies Used**
+
+* **Recurrent Neural Networks (RNNs)**: Suitable for time-series forecasting tasks.
+* **Sliding window (time step)**: Sequence creation for feeding time-dependent inputs.
+* **MinMax normalization**: Helps in faster convergence and better training.
+* **Return sequences**: Enables passing the output of one RNN layer to the next.
+* **Mean Squared Error**: Standard loss function for regression.
+
+---
+
+### ⚠️ **Fixes and Recommendations**
+
+1. **Indentation error in `create_dataset()`**:
+
+   * Fix this:
+
+     ```python
+      def create_dataset(dataset, time_step=10):
+     ```
+   * To this (remove the space):
+
+     ```python
+     def create_dataset(dataset, time_step=10):
+     ```
+
+2. **Redundant nested if-condition** (can be simplified):
+
+   ```python
+   if len(data) > time_step:
+       X, y = create_dataset(data, time_step)
+   ```
+
+3. **Normalize input values** between 0 and 1 **before reshaping** and training (you already did this – good ✅).
+
+4. **Missing feature dimension clarification**:
+
+   * RNNs require `X` to be of shape `(samples, timesteps, features)`. You handled this well with:
+
+     ```python
+     X = X.reshape(X.shape[0], X.shape[1], 1)
+     ```
+
+5. **Consider inverse scaling** if you want to display predicted values in original price format using:
+
+   ```python
+   predicted = model.predict(X_test)
+   predicted_prices = scaler.inverse_transform(predicted)
+   ```
+
+---
+
+Would you like a version of this code with all the fixes applied and output formatting?
+
+
+Code 4 (Stock Price Prediction with RNN):
+
+pip install tensorflow
+
+pip install numpy
+
+pip install pandas
+
+pip install scikit-learn
+
+pip install kagglehub
+
+
+
+
+4. Code 4: TensorFlow - RNN Model for Google Stock Price Prediction
+tensorflow - For building the RNN model.
+
+numpy - For handling data arrays.
+
+pandas - For reading and manipulating the dataset.
+
+scikit-learn - For scaling data and splitting the dataset.
+
+kagglehub - For downloading datasets from Kaggle.
+
+

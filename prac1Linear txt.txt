@@ -1,0 +1,113 @@
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.datasets import fetch_california_housing
+
+data = fetch_california_housing()
+X_train, X_test, y_train, y_test = train_test_split(data.data, data.target, test_size=0.2, random_state=42)
+
+# Standardize the data to improve model performance
+scaler = StandardScaler()
+X_train, X_test = scaler.fit_transform(X_train), scaler.transform(X_test)
+
+# Define the Deep Neural Network (DNN) model with enhancements
+model = Sequential([
+Dense(128, activation='relu', input_shape=(X_train.shape[1],)), # Increased neurons
+Dropout(0.2), # Dropout to prevent overfitting
+Dense(64, activation='relu'),
+Dropout(0.2),
+Dense(32, activation='relu'),
+Dense(1)]) # Linear output layer for predicting continuous values])
+
+# Compile the model with a lower learning rate
+model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.001), loss='mse', metrics=['mae'])
+
+# Train the model using Backpropagation with increased epochs and different batch size
+model.fit(X_train, y_train, epochs=10, batch_size=16, validation_data=(X_test, y_test))
+
+# Evaluate model performance on test data
+test_mae = model.evaluate(X_test, y_test)[1]
+
+# Make predictions on the test set
+y_pred = model.predict(X_test[:5]).flatten()
+
+# Display results
+print(f"Test MAE: {test_mae}")
+print("Actual Prices:", y_test[:5])
+print("Predicted Prices:", y_pred)
+
+
+
+-----------------------------
+Here’s a breakdown of what you’ve done in the code, including libraries used and their purposes:
+
+---
+
+### ✅ **What You've Done (Step-by-Step)**
+
+1. **Imported necessary libraries** for deep learning and data preprocessing.
+2. **Fetched the California Housing dataset** (features like house age, income, etc. and target as housing price).
+3. **Split the dataset** into training and testing sets (80% train, 20% test).
+4. **Standardized the features** using `StandardScaler` to normalize the data.
+5. **Built a Deep Neural Network (DNN)** using `Sequential` API with:
+
+   * 3 hidden layers (`Dense`) using ReLU activation
+   * `Dropout` layers to prevent overfitting
+   * A final output layer with 1 neuron for regression (price prediction)
+6. **Compiled the model** using:
+
+   * `Adam` optimizer with a learning rate of `0.001`
+   * `Mean Squared Error (MSE)` as loss
+   * `Mean Absolute Error (MAE)` as evaluation metric
+7. **Trained the model** using backpropagation with:
+
+   * 10 epochs
+   * Batch size of 16
+   * Validation on test data
+8. **Evaluated the model's MAE** (Mean Absolute Error) on test data.
+9. **Made predictions** on 5 samples from the test set.
+10. **Displayed** the actual vs. predicted house prices.
+
+---
+
+### 📚 **Libraries Used and Their Purpose**
+
+| Library / Module                            | Purpose                                                                 |
+| ------------------------------------------- | ----------------------------------------------------------------------- |
+| `tensorflow`                                | Framework for building and training neural networks                     |
+| `tensorflow.keras.models.Sequential`        | Used to create a linear stack of layers                                 |
+| `tensorflow.keras.layers.Dense`             | Fully connected layers for the neural network                           |
+| `tensorflow.keras.layers.Dropout`           | Reduces overfitting by randomly dropping units                          |
+| `sklearn.model_selection.train_test_split`  | Splits the dataset into training and test sets                          |
+| `sklearn.preprocessing.StandardScaler`      | Standardizes features by removing the mean and scaling to unit variance |
+| `sklearn.datasets.fetch_california_housing` | Loads the California housing dataset for regression tasks               |
+
+---
+
+### 💡 **Concepts/Technologies Used**
+
+* **Deep Neural Networks (DNN)**: Multilayer perceptrons for regression.
+* **ReLU Activation**: Speeds up training by avoiding vanishing gradients.
+* **Dropout**: A regularization technique to avoid overfitting.
+* **Backpropagation**: Core algorithm for training neural networks.
+* **Regression**: Predicts continuous target values (e.g., housing prices).
+* **Model Evaluation (MAE)**: Measures average magnitude of prediction errors.
+* **Feature Scaling**: Improves training convergence.
+
+Would you like a visual diagram of the model architecture or training process?
+
+
+
+Code 1 (California Housing):
+
+pip install tensorflow
+
+pip install scikit-learn
+
+
+1. Code 1: TensorFlow - Deep Neural Network (DNN) for California Housing Prediction
+tensorflow - For deep learning model creation.
+
+scikit-learn - For data splitting, standardizing, and dataset loading.

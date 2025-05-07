@@ -1,0 +1,139 @@
+import tensorflow as tf 
+from tensorflow.keras.datasets import imdb 
+from tensorflow.keras.preprocessing.sequence import pad_sequences 
+from tensorflow.keras.models import Sequential 
+from tensorflow.keras.layers import Embedding, Dense, GlobalAveragePooling1D, Dropout
+
+(X_train, y_train), (X_test, y_test) = imdb.load_data(num_words=10000) 
+X_train = pad_sequences(X_train, maxlen=200) 
+X_test = pad_sequences(X_test, maxlen=200) 
+
+model = Sequential([ 
+Embedding(10000, 32),
+Dense(128, activation='relu'),
+Dropout(0.2),
+GlobalAveragePooling1D(), 
+Dense(1, activation='sigmoid') 
+]) 
+
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy']) 
+model.fit(X_train, y_train, epochs=5, batch_size=64, validation_data=(X_test, y_test)) 
+
+from tensorflow.math import confusion_matrix 
+
+pred = model.predict(X_test)
+
+matrix = confusion_matrix(pred, y_test)
+
+matrix
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+plt.figure(figsize=(8, 6))  # Adjust figure size for better readability
+sns.heatmap(matrix, annot=True, fmt=".0f", cmap="Blues")
+plt.xlabel("Predicted Label")
+plt.ylabel("True Label")
+plt.title("Confusion Matrix")
+plt.show()
+
+
+----------------------
+Here’s a detailed breakdown of what you’ve done in the above code, along with libraries used and their purpose, all in point-wise format:
+
+---
+
+### ✅ **What You’ve Done (Step-by-Step)**
+
+1. **Imported TensorFlow and relevant Keras modules** for deep learning tasks.
+2. **Loaded the IMDb movie review dataset** with the top 10,000 most frequent words only.
+3. **Padded the sequences** to ensure all reviews have the same length (200 words).
+4. **Built a Sequential model** with:
+
+   * `Embedding` layer to convert word indices into dense vectors.
+   * `Dense` layer with 128 neurons and ReLU activation.
+   * `Dropout` layer to reduce overfitting.
+   * `GlobalAveragePooling1D` layer to reduce dimensionality after embeddings.
+   * Final `Dense` layer with a sigmoid activation for binary classification (positive or negative review).
+5. **Compiled the model** with:
+
+   * `Adam` optimizer
+   * `Binary crossentropy` loss function
+   * `Accuracy` as the evaluation metric
+6. **Trained the model** for 5 epochs using a batch size of 64.
+7. **Predicted labels** on the test set using the trained model.
+8. **Calculated the confusion matrix** to evaluate classification performance.
+9. **Installed and used `seaborn` and `matplotlib`** to **visualize the confusion matrix** as a heatmap.
+
+---
+
+### 📚 **Libraries/Modules Used and Their Purpose**
+
+| Library / Module                                        | Purpose                                                    |
+| ------------------------------------------------------- | ---------------------------------------------------------- |
+| `tensorflow`                                            | Main deep learning library                                 |
+| `tensorflow.keras.datasets.imdb`                        | Loads the IMDb dataset for binary sentiment classification |
+| `tensorflow.keras.preprocessing.sequence.pad_sequences` | Pads sequences to the same length                          |
+| `tensorflow.keras.models.Sequential`                    | Creates a linear stack of layers                           |
+| `tensorflow.keras.layers.Embedding`                     | Maps words to dense vectors                                |
+| `tensorflow.keras.layers.Dense`                         | Fully connected layers                                     |
+| `tensorflow.keras.layers.Dropout`                       | Helps reduce overfitting by randomly disabling neurons     |
+| `tensorflow.keras.layers.GlobalAveragePooling1D`        | Averages outputs across the time dimension                 |
+| `tensorflow.math.confusion_matrix`                      | Computes confusion matrix from labels and predictions      |
+| `matplotlib.pyplot`                                     | For plotting the confusion matrix                          |
+| `seaborn`                                               | For creating a styled heatmap of the confusion matrix      |
+
+---
+
+### 💡 **Concepts/Technologies Used**
+
+* **Natural Language Processing (NLP)** using embeddings.
+* **Binary Classification**: Predicting sentiment (positive/negative).
+* **Word Embeddings**: Learning dense representations of words.
+* **Sequence Padding**: Standardizes input length.
+* **Dropout & Regularization**: Avoids overfitting.
+* **Global Average Pooling**: Reduces sequence dimension into a single vector.
+* **Evaluation via Confusion Matrix**: Measures true vs. predicted performance.
+
+---
+
+### ⚠️ **Minor Issue**
+
+In this line:
+
+```python
+matrix = confusion_matrix(pred, y_test)
+```
+
+You’re passing **floating-point predictions** directly into `confusion_matrix`. This may throw an error or give incorrect results.
+
+✅ Fix it like this:
+
+```python
+import numpy as np
+pred_labels = (pred > 0.5).astype("int32")
+matrix = confusion_matrix(y_test, pred_labels)
+```
+
+Would you like me to update the full corrected version of this code?
+
+
+Code 2 (IMDB Sentiment Analysis):
+
+pip install tensorflow
+
+pip install matplotlib
+
+pip install seaborn
+
+
+
+2. Code 2: TensorFlow - Sentiment Analysis using IMDB Dataset
+tensorflow - For building the neural network model.
+
+matplotlib - For plotting the confusion matrix.
+
+seaborn - For enhanced visualization of the confusion matrix.
+
+
+

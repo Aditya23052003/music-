@@ -1,0 +1,144 @@
+from tensorflow.keras.datasets import fashion_mnist
+
+(train_x, train_y), (test_x, test_y) = fashion_mnist.load_data()
+
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Flatten, MaxPooling2D, Conv2D
+
+model = Sequential()
+
+model.add(Conv2D(filters64,kernel_size=(3,3),activation='relu',input_shape=(28, 28, 1)))
+# Adding maxpooling layer to get max value within a matrix
+model.add(MaxPooling2D(pool_size=(2,2)))
+model.add(Flatten())
+model.add(Dense(128, activation = "relu"))
+model.add(Dense(10, activation = "softmax"))
+
+model.summary()
+
+model.compile(optimizer = 'adam', loss = 'sparse_categorical_crossentropy', metrics = ['accuracy'])
+
+import numpy as np
+
+model.fit(train_x.astype(np.float32), train_y.astype(np.float32), epochs = 5, validation_split = 0.2)
+
+loss, acc = model.evaluate(test_x, test_y)
+
+labels = ['t_shirt', 'trouser', 'pullover', 'dress', 'coat', 'sandal', 'shirt', 'sneaker',   'bag', 'ankle_boots']
+
+predictions = model.predict(test_x[:1])
+
+label = labels[np.argmax(predictions)]
+
+import matplotlib.pyplot as plt
+print(label)
+plt.imshow(test_x[:1][0])
+plt.show
+
+
+
+--------------------------------------
+Here’s a detailed point-wise explanation of what you’ve done in the provided **Fashion MNIST CNN classification code**, along with **libraries used**, **concepts**, and **fixes**:
+
+---
+
+### ✅ **What You’ve Done (Step-by-Step)**
+
+1. **Loaded the Fashion MNIST dataset** which contains 28×28 grayscale images of fashion items (10 categories).
+2. **Built a CNN (Convolutional Neural Network)** using Keras `Sequential` model:
+
+   * `Conv2D` layer: Extracts features using 64 filters (⚠️ typo here – see fix below).
+   * `MaxPooling2D`: Reduces spatial dimensions and extracts dominant features.
+   * `Flatten`: Converts 2D matrix into a 1D vector for fully connected layers.
+   * `Dense` layer (128 neurons): A hidden layer with ReLU activation.
+   * `Dense` layer (10 neurons): Final output layer with **softmax** for multi-class classification.
+3. **Compiled the model** using:
+
+   * `adam` optimizer
+   * `sparse_categorical_crossentropy` loss (good for integer labels)
+   * `accuracy` metric
+4. **Trained the model** for 5 epochs on the training data (with 20% used for validation).
+5. **Evaluated the model** on test data.
+6. **Predicted the class label** for the first test image.
+7. **Mapped prediction to human-readable label** using the `labels` list.
+8. **Displayed the predicted label** and **plotted the image** using `matplotlib`.
+
+---
+
+### 📚 **Libraries Used and Their Purpose**
+
+| Library                                   | Purpose                                       |
+| ----------------------------------------- | --------------------------------------------- |
+| `tensorflow.keras.datasets.fashion_mnist` | Loads fashion MNIST dataset                   |
+| `tensorflow.keras.models.Sequential`      | Model class to stack layers                   |
+| `tensorflow.keras.layers.Conv2D`          | Extracts features using convolutional filters |
+| `tensorflow.keras.layers.MaxPooling2D`    | Downsamples feature maps                      |
+| `tensorflow.keras.layers.Flatten`         | Converts 2D features into a 1D vector         |
+| `tensorflow.keras.layers.Dense`           | Fully connected neural network layers         |
+| `numpy`                                   | Type conversion and numerical operations      |
+| `matplotlib.pyplot`                       | Plots image data                              |
+
+---
+
+### 💡 **Concepts/Technologies Used**
+
+* **Convolutional Neural Networks (CNNs)** for image classification.
+* **Feature extraction** via convolution and pooling.
+* **Multi-class classification** with `softmax` output.
+* **Sparse categorical crossentropy** for label encoding as integers (not one-hot).
+* **Image prediction and visualization**.
+
+---
+
+### ⚠️ **Fixes & Improvements**
+
+1. **Syntax Error – `filters64` should be `filters=64`**:
+
+```python
+model.add(Conv2D(filters=64, kernel_size=(3, 3), activation='relu', input_shape=(28, 28, 1)))
+```
+
+2. **Reshape input data for Conv2D**:
+
+```python
+train_x = train_x.reshape(-1, 28, 28, 1).astype('float32') / 255.0
+test_x = test_x.reshape(-1, 28, 28, 1).astype('float32') / 255.0
+```
+
+3. **Fix missing parentheses in `plt.show`**:
+
+```python
+plt.show()
+```
+
+4. **Ensure predictions return human-readable labels correctly**:
+
+```python
+label = labels[np.argmax(predictions[0])]
+```
+
+---
+
+### ✅ Optional: Full Working Version (Corrected Code)
+
+Would you like me to provide the full corrected version of this code with all the fixes applied?
+
+
+Code 3 (Fashion MNIST CNN):
+
+pip install tensorflow
+
+pip install numpy
+
+pip install matplotlib
+
+
+
+3. Code 3: TensorFlow - Fashion MNIST Dataset (CNN Model)
+tensorflow - For building the Convolutional Neural Network (CNN) model.
+
+numpy - For handling data arrays and reshaping.
+
+matplotlib - For displaying images.
+
+
