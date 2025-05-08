@@ -1,0 +1,33 @@
+For Code 1: California Housing Price Prediction
+!pip install tensorflow scikit-learn
+
+✅ For Code 2: IMDB Sentiment Analysis
+!pip install tensorflow matplotlib seaborn
+
+✅ For Code 3: Fashion MNIST (CNN)
+!pip install tensorflow numpy matplotlib
+
+✅ For Code 4: Google Stock Price Prediction (RNN)
+!pip install tensorflow numpy pandas scikit-learn kagglehub
+
+
+Code 1: California Housing Price Prediction
+tensorflow - For building and training the neural network.
+scikit-learn - For data preprocessing (StandardScaler) and splitting (train_test_split).
+
+Code 2: IMDB Sentiment Analysis
+tensorflow - For loading dataset and building the deep learning model.
+matplotlib - For plotting the confusion matrix.
+seaborn - For heatmap visualization of the confusion matrix.
+
+Code 3: Fashion MNIST (CNN Model)
+tensorflow - For loading dataset and building the CNN model.
+numpy - For handling data arrays.
+matplotlib - For displaying image predictions.
+
+Code 4: Google Stock Price Prediction (RNN Model)
+tensorflow - For creating and training the RNN model.
+numpy - For reshaping and preparing sequences.
+pandas - For reading CSV data from the dataset.
+scikit-learn - For scaling (MinMaxScaler) and splitting the dataset.
+kagglehub - For downloading dataset from Kaggle.
